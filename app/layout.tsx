@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
@@ -17,27 +18,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="dark">
-      <body className={`${inter.variable} ${mono.variable} font-sans bg-black text-white min-h-screen flex flex-col`}>
+      <body className={`${inter.variable} ${mono.variable} font-sans bg-black text-white h-screen flex overflow-hidden`}>
         
-        {/* Header Minimalista (Navegação via comandos) */}
-        <header className="w-full flex items-center justify-between p-5 border-b border-white/5">
-          <div className="text-sm font-bold tracking-widest uppercase">
-            Pega & Posta<span className="text-zinc-600">.com</span>
-          </div>
-          
-          <nav className="flex gap-6 text-xs font-mono text-zinc-500">
-            <button className="hover:text-white transition-colors">/radar-trends</button>
-            <button className="hover:text-white transition-colors">/mazallo-shoes</button>
-            <button className="hover:text-white transition-colors">/creators</button>
-          </nav>
-        </header>
+        {/* O Menu Lateral está de volta! */}
+        <Sidebar />
 
         {/* Área Principal de Renderização */}
-        <main className="flex-1 flex flex-col overflow-hidden relative">
-          {/* Gradiente sutil no fundo para não ficar 100% flat */}
+        <main className="flex-1 flex flex-col relative overflow-y-auto">
+          {/* Header minimalista apenas para Mobile */}
+          <div className="md:hidden flex items-center justify-between p-4 border-b border-white/5">
+            <div className="text-sm font-bold tracking-widest uppercase">JNX ENGINE</div>
+          </div>
+
+          {/* Gradiente sutil no fundo */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] opacity-10 bg-gradient-to-b from-zinc-500 to-transparent blur-[100px] pointer-events-none" />
           
-          {children}
+          <div className="flex-1 relative z-10 w-full">
+            {children}
+          </div>
         </main>
       </body>
     </html>
