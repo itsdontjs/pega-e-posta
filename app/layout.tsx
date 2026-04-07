@@ -13,14 +13,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${inter.className} bg-black text-zinc-100 flex min-h-screen selection:bg-yellow-400 selection:text-black`}>
-        {/* Menu Lateral Fixo */}
+      {/* Retirei o 'flex' daqui para não quebrar a tela */}
+      <body className={`${inter.className} bg-black text-zinc-100 min-h-screen selection:bg-yellow-400 selection:text-black`}>
+        
         <Sidebar />
         
-        {/* Conteúdo Principal (Margem de 64 para não ficar atrás do menu) */}
-        <main className="flex-1 ml-64 min-h-screen bg-black">
+        {/* No celular (padrão): sem margem. Em telas grandes (md): margem de 64 para caber o menu */}
+        <main className="md:ml-64 min-h-screen bg-black overflow-x-hidden relative">
           {children}
         </main>
+        
       </body>
     </html>
   );
