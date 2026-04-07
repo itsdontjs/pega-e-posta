@@ -1,103 +1,70 @@
 "use client";
-
-import { LayoutDashboard, ShoppingBag, Users, Video, Settings, Rocket, Zap } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Users, Video, Settings, Rocket, TerminalSquare } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const pathname = usePathname();
-
   const isActive = (path: string) => pathname === path;
 
   return (
-    <aside className="w-64 bg-[#0a0a0a] border-r border-[#262626] h-screen flex flex-col fixed text-[#a3a3a3] z-20">
-      {/* Header */}
-      <div className="p-6 border-b border-[#262626]">
-        <Link href="/" className="block">
-          <h1 className="text-2xl font-black text-white tracking-tight mb-2 hover:text-[#00d9ff] transition-colors">
-            PEGA<span className="text-[#00d9ff]">&</span>POSTA
+    <aside className="w-64 bg-[#050505] border-r border-zinc-900 h-screen flex flex-col fixed left-0 top-0 text-zinc-400 z-20">
+      {/* Header Grok Style */}
+      <div className="p-6 border-b border-zinc-900">
+        <Link href="/" className="flex items-center gap-2 mb-2">
+          <TerminalSquare className="text-yellow-400" size={24} />
+          <h1 className="text-xl font-black text-white tracking-tighter hover:text-yellow-400 transition-colors">
+            PEGA<span className="text-yellow-400">&</span>POSTA
           </h1>
         </Link>
-        <div className="flex items-center gap-1 px-2 py-1 bg-[#121212] rounded-md w-fit">
-          <Zap size={10} className="text-[#00d9ff]" />
-          <p className="text-[9px] text-[#00d9ff] font-bold uppercase tracking-widest">Modo Ativo</p>
+        <div className="inline-block px-2 py-1 bg-yellow-400/10 border border-yellow-400/20 rounded text-[9px] text-yellow-400 font-mono uppercase tracking-widest">
+          SISTEMA_ATIVO
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Navegação */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        <p className="text-[10px] font-bold text-[#737373] mb-3 ml-2 uppercase tracking-widest">Inteligência</p>
+        <p className="text-[10px] font-mono text-zinc-600 mb-3 ml-2 uppercase tracking-widest">Módulos</p>
 
-        <Link
-          href="/"
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium group ${
-            isActive("/")
-              ? "bg-[#1a1a1a] border border-[#00d9ff] text-[#00d9ff]"
-              : "hover:bg-[#121212] border border-transparent hover:border-[#262626]"
-          }`}
-        >
-          <LayoutDashboard size={18} className={isActive("/") ? "text-[#00d9ff]" : "group-hover:text-[#00d9ff]"} />
+        <Link href="/" className={`flex items-center gap-3 px-4 py-3 rounded-lg font-mono text-sm transition-all group ${isActive("/") ? "bg-zinc-900 border border-zinc-800 text-yellow-400" : "hover:bg-zinc-900/50 border border-transparent hover:border-zinc-800"}`}>
+          <LayoutDashboard size={18} className={isActive("/") ? "text-yellow-400" : "group-hover:text-yellow-400"} />
           Dashboard
         </Link>
 
-        <Link
-          href="/produtos"
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium group ${
-            isActive("/produtos")
-              ? "bg-[#1a1a1a] border border-[#00d9ff] text-[#00d9ff]"
-              : "hover:bg-[#121212] border border-transparent hover:border-[#262626]"
-          }`}
-        >
-          <ShoppingBag size={18} className={isActive("/produtos") ? "text-[#00d9ff]" : "group-hover:text-[#00d9ff]"} />
-          Produto Vencedor
+        <Link href="/produtos" className={`flex items-center gap-3 px-4 py-3 rounded-lg font-mono text-sm transition-all group ${isActive("/produtos") ? "bg-zinc-900 border border-zinc-800 text-yellow-400" : "hover:bg-zinc-900/50 border border-transparent hover:border-zinc-800"}`}>
+          <ShoppingBag size={18} className={isActive("/produtos") ? "text-yellow-400" : "group-hover:text-yellow-400"} />
+          Radar de Produtos
         </Link>
 
-        <Link
-          href="/creators"
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium group ${
-            isActive("/creators")
-              ? "bg-[#1a1a1a] border border-[#00d9ff] text-[#00d9ff]"
-              : "hover:bg-[#121212] border border-transparent hover:border-[#262626]"
-          }`}
-        >
-          <Users size={18} className={isActive("/creators") ? "text-[#00d9ff]" : "group-hover:text-[#00d9ff]"} />
-          Top Creators
+        <Link href="/creators" className={`flex items-center gap-3 px-4 py-3 rounded-lg font-mono text-sm transition-all group ${isActive("/creators") ? "bg-zinc-900 border border-zinc-800 text-yellow-400" : "hover:bg-zinc-900/50 border border-transparent hover:border-zinc-800"}`}>
+          <Users size={18} className={isActive("/creators") ? "text-yellow-400" : "group-hover:text-yellow-400"} />
+          Espião de Afiliados
         </Link>
 
-        <div className="pt-4 mt-4 border-t border-[#262626]">
-          <p className="text-[10px] font-bold text-[#737373] mb-3 ml-2 uppercase tracking-widest">Minha Operação</p>
-          <Link
-            href="#"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium group hover:bg-[#121212] border border-transparent hover:border-[#262626]"
-          >
-            <Video size={18} className="group-hover:text-[#00d9ff]" />
+        <div className="pt-4 mt-4 border-t border-zinc-900">
+          <p className="text-[10px] font-mono text-zinc-600 mb-3 ml-2 uppercase tracking-widest">Configurações</p>
+          <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg font-mono text-sm transition-all hover:bg-zinc-900/50 border border-transparent hover:border-zinc-800">
+            <Video size={18} className="text-zinc-500" />
             Meus Vídeos
           </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium group hover:bg-[#121212] border border-transparent hover:border-[#262626]"
-          >
-            <Settings size={18} className="group-hover:text-[#00d9ff]" />
-            Configurações
+          <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg font-mono text-sm transition-all hover:bg-zinc-900/50 border border-transparent hover:border-zinc-800">
+            <Settings size={18} className="text-zinc-500" />
+            Preferências
           </Link>
         </div>
       </nav>
 
-      {/* Upgrade Card */}
-      <div className="p-4 border-t border-[#262626]">
-        <div className="relative overflow-hidden bg-gradient-to-br from-[#00d9ff]/10 to-[#00a8cc]/5 p-4 rounded-lg border border-[#00d9ff]/20 hover:border-[#00d9ff]/40 transition-all">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#00d9ff]/0 via-[#00d9ff]/5 to-[#00d9ff]/0 opacity-0 hover:opacity-100 transition-opacity" />
+      {/* Box Club 33 */}
+      <div className="p-4 border-t border-zinc-900">
+        <div className="bg-[#0a0a0a] border border-zinc-800 p-4 rounded-xl relative overflow-hidden group">
           <div className="relative z-10">
-            <div className="flex items-center gap-2 font-bold mb-2 text-[#00d9ff] text-sm">
-              <Rocket size={16} />
-              PLANO ULTRA
+            <div className="flex items-center gap-2 font-black mb-1 text-zinc-100 uppercase tracking-tighter">
+              <Rocket size={16} className="text-yellow-400" />
+              CLUB 33
             </div>
-            <p className="text-[11px] text-[#a3a3a3] mb-3">Acesso ilimitado à API de Vendas</p>
-            <div className="w-full bg-[#1a1a1a] h-1.5 rounded-full overflow-hidden mb-3 border border-[#262626]">
-              <div className="bg-gradient-to-r from-[#00d9ff] to-[#00a8cc] h-full w-[85%] rounded-full"></div>
-            </div>
-            <button className="w-full bg-gradient-to-r from-[#00d9ff] to-[#00a8cc] text-[#0a0a0a] text-xs font-black py-2.5 rounded-lg hover:shadow-lg hover:shadow-[#00d9ff]/20 transition-all uppercase tracking-wider">
-              Upgrade Pro
+            <p className="text-[10px] text-zinc-500 font-mono mb-4">Acesso total à API Apify</p>
+            <button className="w-full bg-yellow-400 text-black text-[10px] font-black py-3 rounded hover:bg-yellow-300 transition-colors uppercase tracking-widest">
+              Fazer Upgrade
             </button>
           </div>
         </div>
