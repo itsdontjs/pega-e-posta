@@ -1,5 +1,5 @@
 "use client";
-import { X, Copy, CheckCircle2, UploadCloud, Loader2 } from "lucide-react";
+import { X, Copy, Terminal, Loader2 } from "lucide-react";
 import { useState, useRef } from "react";
 
 export default function ExtractionModal({ video, onClose }: { video: any; onClose: () => void }) {
@@ -13,130 +13,94 @@ export default function ExtractionModal({ video, onClose }: { video: any; onClos
     if (!file) return;
 
     setIsLoading(true);
-
-    // Cria o pacote para enviar para o backend Python
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      // Bate na porta da sua API FastAPI
-      const response = await fetch("http://localhost:8000/api/modelar", {
-        method: "POST",
-        body: formData,
-      });
-
+      const response = await fetch("http://localhost:8000/api/modelar", { method: "POST", body: formData });
       const data = await response.json();
-      
-      if (response.ok) {
-        setResultado(data);
-      } else {
-        alert("Erro na API: " + data.detail);
-      }
+      if (response.ok) setResultado(data);
+      else alert("Erro na API: " + data.detail);
     } catch (error) {
-      alert("Erro ao conectar com o servidor. O Python está ligado?");
+      alert("ERR_CONNECTION_REFUSED: O backend Python está rodando?");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-5xl flex overflow-hidden shadow-2xl h-[80vh]">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 sm:p-10">
+      <div className="bg-black border border-white/20 w-full max-w-5xl flex flex-col h-[85vh] shadow-[0_0_50px_rgba(255,255,255,0.05)]">
         
-        {/* Esquerda: Preview do Vídeo */}
-        <div className="w-1/3 bg-slate-950 border-r border-slate-800 p-6 flex flex-col relative">
-          <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white lg:hidden">
-            <X size={24} />
+        {/* Header do Terminal */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-zinc-950">
+          <div className="flex items-center gap-3">
+            <Terminal size={16} className="text-zinc-500" />
+            <span className="font-mono text-xs text-zinc-400">root@jnxgrowth:~ /engine/extractor</span>
+          </div>
+          <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors">
+            <X size={16} />
           </button>
-          <h3 className="font-bold text-lg mb-4 text-slate-200 truncate">{video.title}</h3>
-          <div className="flex-1 bg-slate-800 rounded-xl overflow-hidden relative group">
-            <img src={video.thumbnail} alt="Preview" className="w-full h-full object-cover opacity-60" />
-            <div className="absolute inset-0 flex items-center justify-center">
-               <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">
-                  <div className="w-0 h-0 border-t-8 border-t-transparent border-l-[12px] border-l-slate-950 border-b-8 border-b-transparent ml-1"></div>
-               </div>
+        </div>
+
+        {/* Corpo do Terminal */}
+        <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
+          
+          {/* Painel Esquerdo: Input */}
+          <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col bg-zinc-950/50">
+            <span className="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-2">Target Payload</span>
+            <h3 className="font-mono text-sm text-zinc-300 line-clamp-3 mb-6">{video.title}</h3>
+            
+            <div className="mt-auto space-y-4">
+              <input type="file" accept=".mp3" className="hidden" ref={fileInputRef} onChange={handleFileUpload} />
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isLoading}
+                className="w-full bg-white text-black font-mono text-xs font-bold py-3 uppercase hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isLoading ? <Loader2 className="animate-spin" size={16} /> : null}
+                {isLoading ? "Processando LLM..." : "Anexar Áudio (MP3)"}
+              </button>
             </div>
           </div>
-          
-          {/* Botão de Upload Real */}
-          <div className="mt-4">
-            <input type="file" accept=".mp3" className="hidden" ref={fileInputRef} onChange={handleFileUpload} />
-            <button 
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading}
-              className="w-full bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {isLoading ? <Loader2 className="animate-spin" size={20} /> : <UploadCloud size={20} />}
-              {isLoading ? "Processando IA..." : "Fazer Upload do MP3"}
-            </button>
-            <p className="text-[10px] text-center text-slate-500 mt-2">Para testar, suba um áudio da pasta "2_audios_extraidos"</p>
-          </div>
-        </div>
 
-        {/* Direita: A Fábrica */}
-        <div className="flex-1 flex flex-col relative">
-          <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white hidden lg:block">
-            <X size={24} />
-          </button>
-          
-          <div className="p-6 border-b border-slate-800">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              {resultado ? <CheckCircle2 className="text-emerald-400" /> : <Loader2 className="text-slate-500" />}
-              {resultado ? "Modelagem Concluída" : "Aguardando Áudio..."}
-            </h2>
-            <p className="text-slate-400 text-sm mt-1">
-               {resultado ? "Copy gerada com base no framework AIDA e prompts otimizados para o Veo3." : "Faça o upload do áudio na barra lateral para iniciar a engenharia reversa."}
-            </p>
-          </div>
-
-          <div className="px-6 pt-4 flex gap-4 border-b border-slate-800">
-            {["aida", "original"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`pb-3 text-sm font-semibold capitalize border-b-2 transition-colors ${
-                  activeTab === tab ? "border-emerald-400 text-emerald-400" : "border-transparent text-slate-500 hover:text-slate-300"
-                }`}
-              >
-                {tab === "aida" ? "Copy & Prompts Gerados" : "Transcrição Original"}
+          {/* Painel Direito: Output (Ouro) */}
+          <div className="flex-1 flex flex-col bg-[#050505]">
+            <div className="flex items-center gap-6 px-6 py-4 border-b border-white/5 font-mono text-xs">
+              <button onClick={() => setActiveTab("aida")} className={`${activeTab === "aida" ? "text-white border-b border-white pb-1" : "text-zinc-600 hover:text-zinc-400"}`}>
+                Output.copy
               </button>
-            ))}
+              <button onClick={() => setActiveTab("original")} className={`${activeTab === "original" ? "text-white border-b border-white pb-1" : "text-zinc-600 hover:text-zinc-400"}`}>
+                Raw_Transcript.txt
+              </button>
+            </div>
+
+            <div className="flex-1 p-6 overflow-y-auto font-mono text-sm relative">
+              {resultado && (
+                <button className="absolute top-4 right-6 text-zinc-500 hover:text-white transition-colors flex items-center gap-2 text-xs">
+                  <Copy size={14} /> [COPY]
+                </button>
+              )}
+
+              {isLoading ? (
+                <div className="h-full flex flex-col justify-end pb-10 text-zinc-500 space-y-2">
+                  <p>&gt; Inicializando engine de engenharia reversa...</p>
+                  <p>&gt; Extraindo tokens de áudio...</p>
+                  <p className="text-white animate-pulse">&gt; Aplicando framework AIDA. Aguarde...</p>
+                </div>
+              ) : !resultado ? (
+                <div className="h-full flex items-end pb-10 text-zinc-700">
+                  <p>&gt; Aguardando input de dados...</p>
+                </div>
+              ) : (
+                <div className="text-zinc-300 leading-relaxed whitespace-pre-wrap max-w-3xl">
+                  {activeTab === "aida" ? resultado.copy_modelada : `"${resultado.transcricao_original}"`}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="flex-1 p-6 overflow-y-auto bg-slate-900/50 relative">
-             {resultado && (
-               <button className="absolute top-6 right-6 flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border border-slate-700">
-                  <Copy size={16} /> Copiar
-               </button>
-             )}
-
-             {activeTab === "aida" && resultado && (
-                <div className="space-y-4 text-slate-300 text-sm leading-relaxed pr-24 whitespace-pre-wrap">
-                   {resultado.copy_modelada}
-                </div>
-             )}
-
-            {activeTab === "original" && resultado && (
-                <div className="space-y-4 text-slate-400 text-sm leading-relaxed pr-24 italic whitespace-pre-wrap">
-                   "{resultado.transcricao_original}"
-                </div>
-             )}
-
-             {!resultado && !isLoading && (
-                 <div className="h-full flex items-center justify-center text-slate-600 italic">
-                     Nenhum dado gerado ainda. Envie um arquivo MP3.
-                 </div>
-             )}
-
-             {isLoading && (
-                 <div className="h-full flex flex-col items-center justify-center text-emerald-500 space-y-4">
-                     <Loader2 className="animate-spin w-12 h-12" />
-                     <p className="font-bold animate-pulse">Hackeando o funil do concorrente...</p>
-                 </div>
-             )}
-          </div>
         </div>
-
       </div>
     </div>
   );
