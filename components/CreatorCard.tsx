@@ -19,7 +19,6 @@ export default function CreatorCard({ creator }: CreatorCardProps) {
   const getAvatarUrl = () => {
     if (creator.avatar_url) return creator.avatar_url;
     if (creator.creator_avatar) return creator.creator_avatar;
-    // Fallback para avatar gerado
     const seed = creator.username || creator.name || "user";
     return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
   };
@@ -39,52 +38,31 @@ export default function CreatorCard({ creator }: CreatorCardProps) {
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-lg border border-[#262626] bg-[#121212] hover:border-[#00d9ff] transition-all duration-300 hover:shadow-lg hover:shadow-[#00d9ff]/10 p-4">
-      {/* Avatar */}
-      <div className="flex justify-center mb-4">
-        <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#00d9ff]/30 group-hover:border-[#00d9ff] transition-all">
-          <img
-            src={getAvatarUrl()}
-            alt={getUsername()}
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=default`;
-            }}
-          />
-        </div>
+    <div className="group flex items-center justify-between p-3 border-b border-white/5 hover:bg-zinc-900/40 transition-colors">
+      <div className="flex items-center gap-3">
+        <img 
+          src={getAvatarUrl()} 
+          alt={getUsername()}
+          className="w-8 h-8 rounded-sm grayscale group-hover:grayscale-0 border border-white/10 transition-all" 
+          referrerPolicy="no-referrer" 
+        />
+        <span className="font-mono text-sm text-zinc-400 group-hover:text-white transition-colors">
+          @{getUsername()}
+        </span>
       </div>
 
-      {/* Username */}
-      <h3 className="text-center text-sm font-bold text-[#e5e5e5] line-clamp-1 mb-1 group-hover:text-[#00d9ff] transition-colors">
-        {getUsername()}
-      </h3>
-
-      {/* Stats */}
-      <div className="space-y-2 mb-4 pb-4 border-b border-[#262626]">
-        {/* Followers */}
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-[#a3a3a3] flex items-center gap-1">
-            <Users size={12} />
-            Seguidores
-          </span>
-          <span className="font-bold text-[#00d9ff]">{getFollowers()}</span>
+      <div className="flex items-center gap-6 font-mono text-xs">
+        <div className="flex items-center gap-2 text-zinc-600">
+          <Users size={12} /> <span className="text-zinc-300">{getFollowers()}</span>
         </div>
-
-        {/* Sales */}
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-[#a3a3a3] flex items-center gap-1">
-            <TrendingUp size={12} />
-            Vendas
-          </span>
-          <span className="font-bold text-[#34c759]">{getSales()}</span>
+        <div className="flex items-center gap-2 text-zinc-600">
+          <TrendingUp size={12} /> <span className="text-white">{getSales()}</span>
         </div>
-      </div>
-
-      {/* Status Badge */}
-      <div className="flex items-center justify-center gap-1 px-3 py-1.5 bg-[#00d9ff]/10 border border-[#00d9ff]/30 rounded-lg">
-        <div className="w-2 h-2 rounded-full bg-[#00d9ff] animate-pulse" />
-        <span className="text-xs font-bold text-[#00d9ff]">Ativo</span>
+        
+        <div className="hidden sm:flex items-center gap-2 border-l border-white/10 pl-6">
+          <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+          <span className="text-white text-[10px] tracking-widest uppercase">Ativo</span>
+        </div>
       </div>
     </div>
   );
