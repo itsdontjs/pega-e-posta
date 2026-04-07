@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,16 +13,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      {/* Retirei o 'flex' daqui para não quebrar a tela */}
       <body className={`${inter.className} bg-black text-zinc-100 min-h-screen selection:bg-yellow-400 selection:text-black`}>
-        
         <Sidebar />
-        
-        {/* No celular (padrão): sem margem. Em telas grandes (md): margem de 64 para caber o menu */}
-        <main className="md:ml-64 min-h-screen bg-black overflow-x-hidden relative">
+        {/* pt-16 é o espaço do cabeçalho no celular. md:pt-0 remove no PC. md:ml-64 dá o espaço do menu no PC. */}
+        <main className="pt-16 md:pt-0 md:ml-64 min-h-screen bg-black">
           {children}
         </main>
-        
       </body>
     </html>
   );
