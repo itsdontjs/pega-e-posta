@@ -8,7 +8,7 @@ export default function Sidebar() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <aside className="w-64 bg-[#050505] border-r border-zinc-900 h-screen flex flex-col fixed left-0 top-0 text-zinc-400 z-20">
+    <aside className="hidden md:flex w-64 bg-[#050505] border-r border-zinc-900 h-screen flex-col fixed left-0 top-0 text-zinc-400 z-50">
       {/* Header Grok Style */}
       <div className="p-6 border-b border-zinc-900">
         <Link href="/" className="flex items-center gap-2 mb-2">
