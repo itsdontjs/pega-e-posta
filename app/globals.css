@@ -1,12 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   body {
-    @apply bg-[#000000] text-zinc-200 antialiased font-sans selection:bg-white/20 selection:text-white;
+    background-color: #000000;
+    color: #e4e4e7; /* Equivalente ao text-zinc-200 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     /* Evita scroll horizontal indesejado */
     overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
   }
 }
 
@@ -14,7 +20,7 @@
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
-input:-webkit-autofill:active{
+input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px #18181b inset !important;
     -webkit-text-fill-color: white !important;
 }
