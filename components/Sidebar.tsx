@@ -13,7 +13,7 @@ export default function Sidebar() {
 
       <nav className="flex-1 p-4 space-y-1">
         <p className="text-[10px] font-bold text-slate-600 mb-2 ml-2 uppercase">Inteligência</p>
-        
+
         <Link href="/" className="flex items-center gap-3 p-3 hover:bg-slate-900 rounded-lg transition-all font-medium group">
           <LayoutDashboard size={18} className="group-hover:text-emerald-400" />
           Dashboard

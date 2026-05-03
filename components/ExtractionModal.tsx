@@ -14,19 +14,17 @@ export default function ExtractionModal({ video, onClose }: { video: any; onClos
 
     setIsLoading(true);
 
-    // Cria o pacote para enviar para o backend Python
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      // Bate na porta da sua API FastAPI
       const response = await fetch("http://localhost:8000/api/modelar", {
         method: "POST",
         body: formData,
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setResultado(data);
       } else {
@@ -42,7 +40,7 @@ export default function ExtractionModal({ video, onClose }: { video: any; onClos
   return (
     <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-5xl flex overflow-hidden shadow-2xl h-[80vh]">
-        
+
         {/* Esquerda: Preview do Vídeo */}
         <div className="w-1/3 bg-slate-950 border-r border-slate-800 p-6 flex flex-col relative">
           <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white lg:hidden">
@@ -57,11 +55,11 @@ export default function ExtractionModal({ video, onClose }: { video: any; onClos
                </div>
             </div>
           </div>
-          
+
           {/* Botão de Upload Real */}
           <div className="mt-4">
             <input type="file" accept=".mp3" className="hidden" ref={fileInputRef} onChange={handleFileUpload} />
-            <button 
+            <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isLoading}
               className="w-full bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
@@ -78,7 +76,7 @@ export default function ExtractionModal({ video, onClose }: { video: any; onClos
           <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white hidden lg:block">
             <X size={24} />
           </button>
-          
+
           <div className="p-6 border-b border-slate-800">
             <h2 className="text-2xl font-bold flex items-center gap-2">
               {resultado ? <CheckCircle2 className="text-emerald-400" /> : <Loader2 className="text-slate-500" />}

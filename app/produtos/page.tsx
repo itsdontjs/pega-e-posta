@@ -19,22 +19,21 @@ export default function ProdutosPage() {
         body: JSON.stringify({ searchQuery, country_code: country })
       });
       const data = await res.json();
-      
+
       const formatados = data.map((item: any, index: number) => {
         const firstSkuKey = item.skus ? Object.keys(item.skus)[0] : null;
         const skuData = firstSkuKey ? item.skus[firstSkuKey] : null;
-        
-        const precoReal = skuData?.real_price?.sale_price_format 
+
+        const precoReal = skuData?.real_price?.sale_price_format
           ? `${skuData.real_price.currency_symbol} ${skuData.real_price.sale_price_format}`
           : item.min_price || "Ver Preço";
 
-        const imagemReal = 
-          skuData?.image || 
-          item.sale_props?.[0]?.sale_prop_values?.[0]?.image || 
-          item.main_image || 
+        const imagemReal =
+          skuData?.image ||
+          item.sale_props?.[0]?.sale_prop_values?.[0]?.image ||
+          item.main_image ||
           "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600";
 
-        // BUSCA BLINDADA DA URL: Tenta em 3 lugares diferentes do JSON
         const urlReal = item.product_url || item.url || skuData?.product_url || "#";
 
         return {
@@ -83,7 +82,7 @@ export default function ProdutosPage() {
                 <span className="text-xl font-black">{item.price}</span>
                 <DollarSign className="text-emerald-400" size={20} />
               </div>
-              <button 
+              <button
                 onClick={() => { if(item.url !== "#") window.location.href = `/creators?url=${encodeURIComponent(item.url)}`; }}
                 className="w-full bg-white hover:bg-emerald-500 text-slate-950 font-black py-4 rounded-xl uppercase text-[10px] tracking-widest mt-auto"
               >

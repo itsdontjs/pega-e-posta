@@ -80,7 +80,6 @@ export default function Home() {
 
       {/* ── Feed ── */}
       <div className="px-6 pb-16">
-        {/* Subheader */}
         {!loading && videos.length > 0 && (
           <div className="flex items-center justify-between mb-5">
             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">
@@ -90,7 +89,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Loading skeleton */}
         {loading && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -102,7 +100,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Grid */}
         {!loading && videos.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {videos.map((v, i) => (
@@ -115,7 +112,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Empty */}
         {!loading && videos.length === 0 && (
           <div className="flex flex-col items-center justify-center py-32 text-slate-600">
             <p className="font-bold uppercase text-sm">Nenhum vídeo encontrado.</p>
@@ -124,7 +120,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* Modal */}
       {selectedVideo && (
         <ExtractionModal
           video={selectedVideo}
