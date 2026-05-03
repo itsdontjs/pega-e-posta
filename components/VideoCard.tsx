@@ -1,46 +1,112 @@
-export default function VideoCard({ video }: { video: any }) {
-  return (
-    <div className="bg-slate-900 rounded-[2rem] border border-slate-800 overflow-hidden group hover:border-emerald-500/50 transition-all shadow-2xl">
-      <div className="relative aspect-[9/16] bg-slate-800">
-        {/* Badge de Em Alta */}
-        <div className="absolute top-4 left-4 z-10 bg-emerald-500/90 text-slate-950 text-[10px] font-black px-3 py-1 rounded-full flex items-center gap-1 uppercase tracking-tighter">
-          <span className="animate-pulse">●</span> Em Alta
-        </div>
+"use client";
+import { Download, Sparkles, Loader2 } from "lucide-react";
+import { useState } from "react";
 
-        {/* A IMAGEM REAL - COM CORREÇÃO DE REFERRER */}
-        <img 
-          src={video.thumbnail} 
+export default function VideoCard({
+  video,
+  onRefazer,
+}: {
+  video: any;
+  onRefazer: () => void;
+}) {
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (!video.videoUrl) {
+      alert("URL do vídeo não disponível.");
+      return;
+    }
+    setDownloading(true);
+    try {
+      const res = await fetch("http://localhost:8000/api/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoUrl: video.videoUrl }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || "Erro desconhecido");
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${video.author || "video"}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e: any) {
+      alert("Erro ao baixar: " + (e.message || "O backend está rodando?"));
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  return (
+    <div className="relative rounded-3xl overflow-hidden group bg-slate-900 aspect-[9/16] border border-slate-800/50">
+      {/* Thumbnail */}
+      {video.thumbnail ? (
+        <img
+          src={video.thumbnail}
           alt={video.title}
-          referrerPolicy="no-referrer" // <--- OBRIGATÓRIO PARA O TIKTOK
-          className="w-full h-full object-cover"
+          referrerPolicy="no-referrer"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           onError={(e) => {
-            // Se o link for um vídeo ou estiver quebrado, ele carrega um placeholder bonitão
-            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600";
+            (e.target as HTMLImageElement).style.display = "none";
           }}
         />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900" />
+      )}
 
-        {/* Overlay de Gradiente */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
-      </div>
+      {/* Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
-      <div className="p-6 space-y-4">
-        <h3 className="text-white font-bold text-sm leading-snug line-clamp-2 h-10">
-          {video.title}
-        </h3>
-        
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-emerald-400 font-black">
-            <span className="text-xs uppercase opacity-70">Price</span>
-            <span className="text-lg">{video.gmv}</span>
+      {/* Bottom overlay */}
+      <div className="absolute bottom-0 left-0 right-0 p-3">
+        {/* KPIs */}
+        <div className="flex items-center gap-2 mb-2">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-1 flex items-center gap-1.5">
+            <span className="text-[9px] font-black text-black/50 uppercase tracking-wider">Views</span>
+            <span className="text-[11px] font-black text-black">{video.views}</span>
           </div>
-          <div className="bg-slate-800 px-3 py-1 rounded-lg text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-            {video.views}
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-1 flex items-center gap-1.5">
+            <span className="text-[9px] font-black text-black/50 uppercase tracking-wider">Likes</span>
+            <span className="text-[11px] font-black text-black">{video.likes}</span>
           </div>
         </div>
 
-        <button className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-emerald-500/20 uppercase text-xs tracking-widest">
-          Modelar Vídeo
-        </button>
+        {/* Author */}
+        <p className="text-white/70 text-[11px] font-bold mb-2.5 truncate">
+          @{video.author}
+        </p>
+
+        {/* Buttons */}
+        <div className="flex gap-1.5">
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="flex-1 bg-white hover:bg-slate-100 disabled:opacity-60 text-black font-black text-[10px] py-2.5 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-95 uppercase tracking-wide"
+          >
+            {downloading ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <Download size={12} />
+            )}
+            {downloading ? "..." : "Baixar"}
+          </button>
+
+          <button
+            onClick={onRefazer}
+            className="flex-1 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/20 text-white font-black text-[10px] py-2.5 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-95 uppercase tracking-wide"
+          >
+            <Sparkles size={12} />
+            Refazer IA
+          </button>
+        </div>
       </div>
     </div>
   );
